@@ -1,0 +1,38 @@
+Feature: User area on https://inv.bg/
+  As a registered user,
+  I try to add new item with an existing name and
+  I want to create a new invoice with required fields on https://inv.bg/
+
+  Background:
+    Given user is logged into inv.bg successfully
+    Then user panel should contain text "galia77@abv.bg"
+
+  Scenario: Delete item successfully
+    Given item with name "Торта" has been created
+    When user clicks on Артикули header button
+    And he clicks the checkbox on "Торта" item
+    And he clicks on Изтрий button and confirm popup
+    Then he ensures that message that selected item is successfully deleted is displayed and the item does not exist in item list
+
+  Scenario: Try to add a new item with an existing name
+    Given item with name "Хляб" has been created
+    When user clicks on Артикули header button
+    And he clicks on Нов артикул button
+    And he enters item name "Хляб"
+    And he clicks on Добави артикула button
+    Then he ensures that error message that item already exists is visible
+
+  Scenario Outline: Create new invoice with required fields
+    When user clicks on Нова фактура header button
+    And he fills the client's name <name> and city <city> and address <address> and item <item> and quantity <quantity> with quantity unit <quantity_unit> and price without VAT <price_without_VAT> with money currency <money_currency>
+    And he clicks on Създай фактурата button
+    Then he ensures that the invoice is created successfully and it is visible
+    Examples:
+      | name        | city    | address                  | item                        | quantity | quantity_unit | price_without_VAT | money_currency |
+      | Техномаркет | Пловдив | ул. Георги Странски 3    | Хладилник                   | 1        | бр.           | 1500              | лв.            |
+
+      | Технополис  | Пловдив | бул. Санкт Петербург 133 | Телевизор, срок за доставка | 15       | дни           | 30                | EUR            |
+      | Зора        | Пловдив | ул. Недко Каблешков 14   | Печка, срок за ремонт       | 1        | месец         | 200               | GBP            |
+      | Хоум Макс   | Пловдив | бул. Менделеев 2         | Чувал цимент                | 25       | кг            | 5                 | USD            |
+
+
